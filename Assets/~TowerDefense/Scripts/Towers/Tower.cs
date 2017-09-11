@@ -33,8 +33,7 @@ namespace TowerDefense
             {
                 // Remove e from enemies list
                 enemies.Remove(e);
-            }
-            
+            }            
         }
         Enemy GetClosestEnemy()
         {
@@ -43,30 +42,49 @@ namespace TowerDefense
             // LET minDistance = float.MaxValue
             float minDistance = float.MaxValue;
             // FOREACH enemy in enemies
-            foreach (int enemy in enemies) {
+            foreach (Enemy enemyUnit in enemies) {
                 // LET distance = the distance between transform's position and enemy's position
-                distance = distance
+                float distance = Vector3.Distance(transform.position, enemyUnit.transform.position);
+                /*
+                float instead of int coz distance can be a decimal 
+                using Vector3 . Distance with tower position and each enemy units position
+                */
                 // IF distance < minDistance
                 if (distance < minDistance)
                 {
+                    /*
+                    if the distance between the tower and the target is less than min distance
+                    */
                     // SET minDistance = distance
+                    /*
+                    giving us a new min distance
+                    */
+                    minDistance = distance;
                     // SET closest = enemy
+                    closest = enemyUnit;
                 }
             }
             // RETURN closest
             return closest;
         }
-
-        // Use this for initialization
-        void Start()
+        void Attack()
         {
+            Enemy closest = GetClosestEnemy();
+            
 
-        }
-
-        // Update is called once per frame
+            if (closest != null)
+            {
+                cannon.Fire(closest);
+            }
+        } 
         void Update()
         {
-
-        }
+            attackTimer = attackTimer + Time.deltaTime;
+            if (attackTimer >= attackRate)
+            {
+                Attack();
+                attackTimer = 0;
+            }
+        }       
     }
 }
